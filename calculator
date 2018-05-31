@@ -1,0 +1,79 @@
+//Objective: a 4 function calculator that uses user input values
+//Name: Garrett Garcia
+//Compiler: TDM MinGW
+//Editor: MS NotePad
+
+//libraries
+#include <iomanip>
+#include <iostream>
+using namespace std;
+
+//Programmer defined data types
+//NONE
+
+//Special compiler dependent definitions
+//NONE
+
+//global constants/variables
+//NONE
+
+//Programmer defined functions
+//NONE
+
+//main program
+int main()
+{
+  // introduction
+  cout << "Objective: This program is a 4 function calculator that uses user input values\n"; 
+  cout << "Programmer: Garrett Garcia\n"; 
+  cout << "Editor(s) used: Notepad\n"; 
+  cout << "Compiler(s) used: TDM MinGW\n"; 
+  cout << "File: " << __FILE__ << endl; 
+  cout << "Complied: " << __DATE__ << " at " << __TIME__ << endl << endl; 
+
+  //Data
+  double a;        //first user input value
+  double b;        //second user input value
+  int operation;   //which type of operation
+  double answer;   //solution to equation
+  char repeat;     //ask to repeat [y/n]
+  setprecision (15);
+
+  do  
+  {
+  cout << "Enter the first number: ";
+  cin >> a;
+  cin.ignore (1000,10);
+  cout << "Enter the second number: ";
+  cin >> b;
+  cin.ignore (1000, 10);
+  cout << "Please enter operator [1= addition  2= subtraction  3= multiplcation  4= division]: ";
+  cin >> operation;
+  cin.ignore (1000,10);
+    if (operation == 1)
+      answer = a + b;
+      else if (operation == 2)
+      answer = a - b;
+      else if (operation == 3)
+      answer = a * b;
+      else if (b != 0 && operation == 4)
+      answer = a / b;
+      else if (b == 0) cout << "ERROR " << endl;
+      else if (operation !=1 || operation !=2 || operation !=3 || operation !=4) break; //end program if incorrect operation is chosen
+    if (operation == 1)
+      cout << a << " + " << b << " = " << answer << endl; 
+      else if (operation == 2)
+      cout << a << " - " << b << " = " << answer << endl;
+      else if (operation == 3)
+      cout << a << " * " << b << " = " << answer << endl;
+      else if (operation == 4 && b != 0)
+      cout << a << " / " << b << " = " << answer << endl;
+      else if (operation == 4 && b == 0)
+      cout << "try again" << endl;
+      cout << "would you like to do another calculation [Y=yes or N=no]: ";
+      cin >> repeat;
+      cin.ignore(1000,10);
+
+  } while (repeat == 'Y' || repeat == 'y');
+
+}//main
