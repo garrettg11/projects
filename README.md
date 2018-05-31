@@ -1,1 +1,3 @@
 # projects
+
+My career goal is to obtain a role developing software with a high level language. I possess growing knowledge of Computer Science and the ability to write programs in various high-level languages including C++, Python and Java. I also possess Front-end web development skills including proficiency with HTML, CSS, and JavaScript. I have professional experience with 2D and 3D modeling software as well as the ability to lead in the design process of various forms of hardware and software. I Enjoy working in a team environment, but also have the motivation and focus to work independently. 
