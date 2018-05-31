@@ -1,0 +1,104 @@
+
+#ifndef CARD_H
+#define CARD_H
+#include<string>
+
+
+class Card {
+public:
+	Card(int, int);
+	std::string faceValue[13]{	"Ace", "Deuce", "Three", "Four", "Five",
+								"Six", "Seven", "Eight", "Nine","Ten",
+								"Jack", "Queen", "King" };
+	std::string suitValue[4]{	 "Hearts", "Diamonds", "Clubs", "Spades" };
+	std::string toString();
+
+private:
+	int face;
+	int suit;
+
+};
+
+
+#endif // !CARD_H
+
+
+***************************************************************************
+
+
+
+#ifndef DECKOFCARDS_H
+#define DECKOFCARDS_H
+#include"Card.h"
+#include<vector>
+
+class DeckOfCards {
+public:
+	DeckOfCards();
+	void shuffle();
+	Card dealCard(int);
+	bool moreCards();
+	int currentCard;
+
+private:
+	std::vector<Card>theDeck;
+
+};
+
+#endif // !DECKOFCARDS_H
+
+*******************************************************************************
+
+//Garrett Garcia
+
+#include<iostream>
+#include<iomanip>
+#include<string>
+#include"DeckOfCards.h"
+#include"Card.h"
+using namespace std;
+#include<cstdlib>
+#include<ctime>
+
+
+int main() {
+
+	//initialize random number gen
+	srand(time(0));
+
+	//test constructor
+	//DeckOfCards master;
+	//master.currentCard = 0;
+	//Card onTop(0, 0);
+	//onTop = master.dealCard(30);
+	//cout << "Test toString function: " << onTop.toString() << endl;
+
+	DeckOfCards master;
+
+	//deal cards in order
+	cout << "\n\ncards before shuffling:\n\n";
+	while (master.moreCards()) {
+		Card aCard(0, 0);
+		aCard = master.dealCard(master.currentCard);
+		cout << setw(20) << aCard.toString();
+	}//while
+
+	//shuffle cards
+	master.shuffle();
+
+	//cards after shuffling
+	cout << "\n\nCards AFTER shuffling:\n\n";
+	master.currentCard = 0;
+	while (master.moreCards()) {
+		Card aCard(0, 0);
+		aCard = master.dealCard(master.currentCard);
+		cout << setw(20) << aCard.toString();
+	}//while
+
+
+	cout << endl << endl;
+
+
+	system("PAUSE");
+	return 0;
+}
