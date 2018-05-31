@@ -1,0 +1,95 @@
+//Programmer: Garrett Garcia
+
+#include<iostream>
+using namespace std;
+
+struct StringRec
+
+{
+
+	int strLen;
+
+	char theStr[256];
+
+};
+
+//function prototypes
+
+void AddChar(StringRec& str, char theCh); // adds one character to the string
+
+void OutputString(StringRec str); // outputs the string and the length of the string
+
+bool CheckString(StringRec str); // returns true if string is a palindrome, false otherwise
+
+
+void main(void)
+
+{
+
+	StringRec theString;
+	char theChar;
+
+	theString.strLen = 0;
+
+	cout << "Enter a string: ";
+	cin.get(theChar);
+
+	while (theChar != '\n')
+
+	{
+
+		AddChar(theString, theChar);
+
+		cin.get(theChar);
+
+	}//while
+
+	OutputString(theString);
+
+	if (CheckString(theString))
+
+		cout << "\n\nThe string is a palindrome";
+
+	else
+
+		cout << "\n\nThe string is not a palindrome\n";
+
+	system("PAUSE");
+
+} //main
+
+void AddChar(StringRec& str, char theCh)
+{
+	// adds one character to the string
+	str.strLen++;
+	str.theStr[str.strLen-1] = theCh;
+	
+}
+
+void OutputString(StringRec str)
+{
+	// outputs the string and the length of the string
+	cout << "The string is: ";
+	for (int i = 0; i < str.strLen; i++)
+		cout << str.theStr[i];
+	cout << "\nThe length is: " << str.strLen << endl;
+
+}
+
+bool CheckString(StringRec str)
+{
+	// returns true if string is a palindrome, false otherwise
+	for (int i = 0, j = str.strLen-1 ; i < str.strLen && j > 0; i++, j--)
+	{
+		if (str.theStr[i] == ' ')
+			i++;
+		if (str.theStr[j] == ' ')
+			j--;
+
+		if (str.theStr[i] != str.theStr[j])
+			return false;
+	}//for
+	
+	return true;
+}
+
