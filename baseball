@@ -1,0 +1,205 @@
+//Garrett Garcia
+
+//libraries
+#include <algorithm>
+#include <fstream>
+#include <iomanip>
+#include <iostream>
+#include <string>
+using namespace std;
+#include <cctype>
+
+//function prototypes
+void introduction();
+int getSize (string);
+void getData (int, string, string[]);
+void showTeams (int, string[]);
+string askUser ();
+string changeCase(string);
+int checkWinners(int, string[], string);
+void outputData (int, string);
+char playBall();
+
+//lowercase initialization for function changeCase
+class toLower {public:char operator() (char c) const {return tolower(c);}};
+
+int main()
+{
+  //data
+  ifstream fin;                        //input file object
+  int howManyTeams;                    //size of Teams.txt file
+  string teamFile = "Teams.txt";       //included text file of MLB teams
+  int howManyWinners;                  //size of Winners.txt file
+  string winnersFile = "Winners.txt";  //included text file of WS winners
+  string wSWins;                       //user chosen team to check
+  int teamWins;                        //how many times the chosen team has won
+  char playAgain;                      //ask user to check another team
+  
+  introduction();
+  
+  //get file sizes
+  howManyTeams = getSize(teamFile);
+  //cout << "# of teams in team file: " << howManyTeams << endl;  
+
+  howManyWinners = getSize(winnersFile);
+  //cout << "# of Winners in winners file: " << howManyWinners << endl;  
+  
+  //define arrays
+  string teams[howManyTeams];
+  string winners[howManyWinners];
+  
+  //get data from input file and store in array
+  getData (howManyTeams, teamFile, teams);
+  getData (howManyWinners, winnersFile, winners);
+  
+  do
+  {
+
+    //display the teams
+    showTeams (howManyTeams, teams);  
+  
+    //ask user for team they want to check for
+    wSWins = askUser();
+  
+    //count how many times the chosen team won
+    teamWins = checkWinners(howManyWinners, winners, wSWins);
+  
+    //display how many times the team won the World Series
+    outputData (teamWins, wSWins);
+  
+    playAgain = playBall();
+  
+  } while (playAgain == 'Y' || playAgain == 'y');
+  
+  system ("PAUSE");
+  return 0;
+  
+} //main
+
+void introduction()
+{
+	cout << "\n\nThis program will tell you how many times a team has won the World Series\n";
+	cout << "The team list can be updated in the file named Teams.txt\n";
+	cout << "The list of winners can be updted in the file named Winners.txt\n";
+	cout << "Enter the name of team from the list below in any case\n"; 
+	cout << "******************************************************************\n";	
+} //introduction
+
+
+int getSize(string fileName)
+{
+	//data
+  ifstream fin;
+  string aTeam;
+  int numberOfTeams;
+  
+  //open file	
+  fin.open(fileName.c_str());
+  
+  
+  if (fin.fail())
+	  cout << "Error opening file.n";
+  else
+  {
+	  while (fin.good())
+	  {
+		  getline (fin, aTeam);
+		  //cout << aTeam << endl;
+		  numberOfTeams++;	  
+	  } //while
+  } //else
+	  
+  //close the file
+	fin.close();
+	fin.clear();
+	
+	return numberOfTeams;	
+	
+} //getSize
+
+void getData (int num, string fileName, string teams[])
+{
+  //data
+  ifstream fin;
+  string aTeam;
+	
+  //open file	
+  fin.open(fileName.c_str());
+  
+  //process the file
+  if (fin)
+  {
+	    for (int i = 0; i < num; i++)
+		{
+			getline(fin, aTeam);
+			//cout << aTeam << endl;
+			teams[i] = aTeam;
+		}	
+	
+	//close the file
+	fin.close();
+	fin.clear();
+  }
+  else
+	{
+	  cout << "ERROR opening the file\n";
+	} //else
+} //getData
+
+void showTeams (int num, string teams[])
+{
+	int line = 0;
+	cout << "The following teams have won the World Series at least once: \n\n";
+	
+	for (int i = 0; i < num; i++)
+	{
+		cout << setw(25) << left << teams[i];
+		line++;
+		if (line % 3 == 0)
+			cout << endl;
+		
+	} //for	
+	
+} //showTeams
+
+string askUser()
+{
+	string worldSeries;
+	cout << "\n\n>>>Enter the name of one of the teams: ";
+	getline (cin, worldSeries);
+	return worldSeries;	
+}
+
+string changeCase(string team)
+{
+  string lcTeam = team;
+  transform(lcTeam.begin(), lcTeam.end(), lcTeam.begin(), toLower());
+  return lcTeam;
+}//changeCase
+
+int checkWinners(int num, string winners[], string userTeam)
+{
+	int numberOfWins = 0;
+	
+	for (int i = 0; i < num; i++)
+	{
+		if ((changeCase(winners[i]) == changeCase(userTeam)))
+		numberOfWins++;	
+	} //for
+	
+	return numberOfWins;	
+} //checkWinners
+
+void outputData (int wins, string team)
+{
+	cout << "The " << team << " have won the World Series " << wins << " times between 1903 and 2012. \n\n";
+} //outputData
+
+char playBall ()
+{
+	char yOrN;
+	cout << "\nWould you like to check another team [Y/N] ";
+	cin >> yOrN;
+	cin.ignore(1000,10);
+	return yOrN;
+} //playBall
