@@ -1,0 +1,212 @@
+//Objective: play the game of War
+//Name: Garrett Garcia
+//Compiler: TDM MinGW
+//Editor: MS NotePad
+
+//libraries
+#include <iostream>  //File IO
+#include <string>    //string library	
+using namespace std; 
+#include <ctime>     //random number gen
+#include <cstdlib>   //random number gen
+
+//Programmer defined data types
+
+struct PlayingCard
+{
+    int rank;
+    int suit;
+};
+PlayingCard deck[52];
+
+PlayingCard aPlayingCard;
+
+//Special compiler dependent definitions
+//NONE
+
+//global constants/variables
+const int MAX_CARDS = 52;       //list capacity
+
+//Programmer defined functions
+string getRank(int rank);
+string getSuit(int suit);
+void shuffleCards(int cards[]);
+void playWar(int humanCards[], int computerCards[]);
+bool getYesOrNo();
+
+
+//main program
+int main() 
+{
+
+  //initialize random number generator
+  srand(time(0));
+    
+    
+  int humanCards[52];    // array of cards;
+  int computerCards[52];
+    
+  for (int i=0; i< 52; i++) {
+     humanCards[i] = i;  // fill the array in order
+     computerCards[i] = i;
+    }
+    
+  // create a deck of cards
+  int k=0;
+  for ( int i = 0; i < 4; i ++)
+  {      
+    for ( int j = 2; j < 15; j++) 
+      {
+        aPlayingCard.suit = i;
+        aPlayingCard.rank = j;
+        deck[k++] = aPlayingCard;
+      } //for
+  }//for
+    
+    
+    bool playAgain = true;
+    while (playAgain == true) {
+        shuffleCards(humanCards);
+        shuffleCards(computerCards);
+        playWar(humanCards, computerCards);
+        playAgain = getYesOrNo();
+        
+        
+    }
+    
+    
+    return 0;
+}
+
+bool getYesOrNo() {
+    char playAgain='X';
+    bool again = false;
+    while (playAgain != 'Y' && playAgain != 'N') {
+    cout << "\n Play again? [Y/N] ";
+    cin >> playAgain;
+        if (playAgain == 'Y') {
+            again = true;
+        } else {
+            if (playAgain == 'N') {
+                again = false;
+            } else {
+                cout << " You must enter a 'Y' or 'N'" << endl;
+            }
+        }
+    }
+    return again;
+    
+    
+    
+}
+
+void playWar(int humanCards[], int computerCards[]) {
+    for (int i=0;  i < 52; i++) {
+        
+        cout << "Computer played " << getRank(deck[computerCards[i]].rank) << " of " << getSuit(deck[computerCards[i]].suit) << endl;
+        cout << "Human played " << getRank(deck[humanCards[i]].rank) << " of " << getSuit(deck[humanCards[i]].suit) << endl;
+        
+        if (deck[computerCards[i]].rank > deck[humanCards[i]].rank) {
+            cout << "Computer wins" << endl;
+            
+        } else {
+            if (deck[humanCards[i]].rank > deck[computerCards[i]].rank) {
+                cout << "Human wins" << endl;
+            } else {
+                cout << "It is a tie!! " << endl;
+            }
+        }
+        
+    }
+    
+}
+void shuffleCards(int cards[]) {
+    
+    //--- Shuffle elements by randomly exchanging each with one other.
+    for (int i=0; i<(52-1); i++) {
+        int r = i + (rand() % (52-i)); // Random remaining position.
+        int temp = cards[i]; cards[i] = cards[r]; cards[r] = temp;
+    }
+    
+    //--- Print cards
+    //   for (int c=0; c < 52; c++) {
+    //      cout << cards[c] << " ";  // Just print number
+    //  }
+    //  cout << endl;
+}
+
+string getSuit(int suit) {
+    
+    
+    switch(suit) {
+        case 0:
+            return "Spades" ;
+            break;
+        case 1:
+            return "Diamonds";
+            break;
+        case 2:
+            return "Hearts";
+            break;
+        default:
+            return "Clubs";
+            break;
+            
+    }
+    
+}
+
+
+string getRank(int rank) {
+    
+    
+    
+    switch(rank) {
+        case 2:
+            return "2";
+            break;
+        case 3:
+            return "3";
+            break;
+        case 4:
+            return "4";
+            break;
+        case 5:
+            return "5";
+            break;
+        case 6:
+            return "6";
+            break;
+        case 7:
+            return "7";
+            break;
+        case 8:
+            return "8";
+            break;
+        case 9:
+            return "9";
+            break;
+        case 10:
+            return "10";
+            break;
+            
+        case 11:
+            return "Jack" ;
+            break;
+        case 12:
+            return "Queen";
+            break;
+        case 13:
+            return "King" ;
+            break;
+        case 14:
+            return "Ace" ;
+            break;
+        default:
+            return "error";
+            break;
+            
+    }
+    
+    
+}
