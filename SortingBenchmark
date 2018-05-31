@@ -1,0 +1,60 @@
+//Programmer: Garrett Garcia
+
+#include <iostream>
+#include <cstdlib>
+#include <ctime>
+#include <iomanip>
+#include "BubbleSort.h"
+#include "SelectionSort.h"
+#include "InsertionSort.h"
+#include "MergeSort.h"
+#include "QuickSort.h"
+#include "HeapSort.h"
+#include "SortTestHelper.h"
+
+
+using namespace SortTestHelper;
+using namespace std;
+
+int main() {
+
+	// programmer's identification
+	cout << "Programmer: Garrett Garcia\n";
+	cout << "File: " << __FILE__ << endl << endl;
+
+	SortTestHelper::printHeadings();
+
+	string sortTypes[] = { "Bubble Sort", "Selection Sort", "Insertion Sort", "Merge Sort", "Quick Sort", "Heap Sort" };
+
+	int n = 100000;
+
+	double* times = runProcess(n);
+
+	cout << n << setw(15) << times[0] << setw(16) << times[1] << setw(20) << times[2] << setw(30) << times[3]
+		<< setw(20) << times[4] << setw(26) << times[5] << endl;
+	n = 200000;
+
+	times = runProcess(n);
+	cout << n << setw(15) << times[0] << setw(16) << times[1] << setw(20) << times[2] << setw(30) << times[3]
+		<< setw(20) << times[4] << setw(26) << times[5] << endl;
+
+	n = 300000;
+
+	times = runProcess(n);
+	cout << n << setw(15) << times[0] << setw(16) << times[1] << setw(20) << times[2] << setw(30) << times[3]
+		<< setw(20) << times[4] << setw(26) << times[5] << endl;
+
+	n = 400000;
+	times = runProcess(n);
+	cout << n << setw(15) << times[0] << setw(16) << times[1] << setw(20) << times[2] << setw(30) << times[3]
+		<< setw(20) << times[4] << setw(26) << times[5] << endl;
+
+	n = 500000;
+
+	times = runProcess(n);
+	cout << n << setw(15) << times[0] << setw(16) << times[1] << setw(20) << times[2] << setw(30) << times[3]
+		<< setw(20) << times[4] << setw(26) << times[5] << endl;
+	cout << endl;
+
+	return 0;
+}
