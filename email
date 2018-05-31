@@ -1,0 +1,275 @@
+//Objective:  select input and output files and output lines containing "@" validate each potential address
+//Name: Garrett Garcia
+//Course: COMSC-110-1021
+//Compiler: TDM MinGW
+//Editor: MS NotePad
+
+//libraries
+#include <algorithm>
+#include <deque>        //collection library
+#include <fstream>      //file IO
+#include <iostream>     //console IO
+#include <string>       //string library
+using namespace std;
+#include <cctype>       //convert to lowercase
+
+//Programmer defined data types
+struct Address
+{
+    string email;
+}; //address
+
+//Special compiler dependent definitions
+//NONE
+
+//global constants/variables
+const int SIZE = 26;
+char a = '@';                                     //flag to validate a line from file
+char dot = '.';
+
+//Programmer defined functions
+void introduction(string obj); //program introduction
+bool isValidEmailChar (char c); //email validation
+
+int findAtSign  (int i, string s); //email validation
+int findEmailStart  (int i, string s); //email validation
+int findEmailEnd  (int i, string s); //email end
+bool hasDot(int i, int j, string s); //validate dot location
+string changeCase(string email);       //change to upper case for comparison
+bool checkDuplicate (deque<Address>& address, string email); //check for duplicate email addresses
+
+//lowercase initialization for function changeCase
+class toLower {public:char operator() (char c) const {return tolower(c);}};
+
+//main program
+int main()
+{
+  //Data
+  string objective = "is an Email Sorting Utility used to find valid, non-duplicate email addresses from an input file";
+  string inputFile;                                  //user selected input file
+  string outputFile;                                 //user selected output file
+  string defaultInput = "fileContainingEmails.txt";  //default input file
+  string defaultOutput = "copyPasteMyEmails.txt";    //default output file
+  string email;                                      //storage for caseChange func
+  string line;                                       //line from file
+  int s;                                             //iteration counter for first part of email
+  int e;                                             //iteration counter for last part of email
+  int atSignLocation = 0;                            //pointer for at sign
+  string anEmail;                                    //temp storage location for email addresses
+  string temp;                                       //temp storage location for sorting
+  ifstream fin;                                      //file input
+  ofstream fout;                                     //file output
+  int counter;                                       //pointer loction storage
+  Address aAddress;                                  //temp storage for list of valid emails
+  deque<Address> address;                            //empty list for valid emails
+    
+  //program introduction and instruction
+  introduction(objective);
+  cout << "Instruction: please select input and output file names, leave the field blank for default input \n";
+
+  //prompt for input and output file names
+  cout << "Enter input file name [default: " << defaultInput << "]: ";  //prompt for user input file name
+  getline(cin, inputFile);
+  if (inputFile.length() == 0) inputFile = defaultInput;
+  else if (inputFile.length() > 0) defaultOutput = inputFile;  
+  cout << "Enter output file name [default: " << defaultOutput << "]: ";  //prompt for user output file name
+  getline(cin, outputFile);
+  if (outputFile.length() == 0) outputFile = defaultOutput;  
+  cout << "Input file: " << inputFile << endl;                          //output choices to console
+  cout << "Output file: " << outputFile << endl;
+  cout << "\n >>press [ENTER] to continue<< \n";
+  cin.ignore (1000,10);
+    
+  //find valid email addresses from input file
+  fin.open(inputFile.c_str());                              //open input file
+  if (!fin.good()) throw "I/O error";
+  while (fin.good())
+  {
+    getline (fin, line);
+    counter = 0;
+    atSignLocation = findAtSign(counter, line);        
+    while (atSignLocation > 0)                    // while we have more @ signs
+    {                                               
+      s = findEmailStart(atSignLocation, line);   // find start of email
+      e = findEmailEnd(atSignLocation, line);     // find end of email
+      if (hasDot(atSignLocation, e, line))        // see if email has valid dot
+      {
+        anEmail = line.substr(s, e-s);            // if email has valid dot print it
+        if (!checkDuplicate (address, anEmail))
+        {
+          Address aAddress;                 //temp storage
+          aAddress.email = anEmail;         //add to collection
+          address.push_back(aAddress);     //add to back end of collection
+        } //if
+      }//if
+      counter = atSignLocation +1;                   // see if there are more emails
+      atSignLocation = findAtSign(counter, line);    // see if there is another @ on the line
+    } //while
+  }//while
+  fin.close();
+    
+  //output valid email addresses to console and outputfile if any
+  if (address.size() > 0)
+  {
+    fout.open(outputFile.c_str());
+    if (!fout.good()) throw "I/O error";
+    cout << "The following emails were found:  " << endl;  //output list unsorted to console
+    for (int i =0; i < address.size(); i++) 
+    {
+      cout << address[i].email << endl;
+    }//for
+    for (int i = 0; i < address. size(); i++)       //sort the array with 2 nested loops
+    { 
+      for (int j = i + 1 ; j <address. size(); j++)
+      {
+        if (changeCase(address[i].email)> changeCase(address[j].email))
+        {
+          temp = address[i].email;
+          address[i].email = address[j].email;
+          address[j].email = temp;
+        } //if
+      } //for
+    }//for
+    cout << "Your output file reads: ";          //output to console, same as the output file         
+    for (int i =0; i < address.size(); i++) 
+    {
+      cout << address[i].email;
+      fout << address[i].email;   
+      if (i != address. size() - 1) 
+      {
+        cout << "; ";
+        fout << "; ";
+      }//if
+    }//for
+    cout << endl << endl << "A total of " << address.size() << " valid emails were found and output in alphabetical order to the file " << outputFile << endl;
+    cout << "You can copy/paste the contents of this file in the 'to', 'cc', or 'bcc' field of any message" << endl;
+    cout << "Please consider using the blind carbon copy (bcc) field to protect the privacy of your recipients" << endl;
+    cout << "Thank you for using the Email Sorting Utility" << endl;
+  } //if
+  else
+  {
+  cout << "Sorry, no valid emails were found in the file named " << inputFile;  //output to console if no valid email addresses were found
+  } //else
+  fout.close();
+}//main
+
+//program introduction
+void introduction(string obj)
+{
+  //Data
+  //obj = the program objective (text)
+    
+  // output my name and objective and program information
+  cout << "\n\n Objective: This program ";
+  cout << obj << endl;
+  cout << "Programmer: Garrett Garcia\n";
+  cout << "Editor(s) used: Notepad\n";
+  cout << "Compiler(s) used: TDM MinGW\n";
+  cout << "File: " << __FILE__ << endl;
+  cout << "Complied: " << __DATE__ << " at " << __TIME__ << endl << endl;
+}//introduction
+
+bool isValidEmailChar (char c)
+{
+  //Data
+  bool result = false;
+  char cap[SIZE];
+  cap [0] = 'A';
+  char lc[SIZE];
+  lc [0] = 'a';
+  for (int i = 0; i < SIZE; i++)
+  {
+    cap[i+1] = cap[i] + 1;
+    //cout << cap[i];
+    if (c == cap[i]) return true;
+  } //for
+  for (int i = 0; i < SIZE; i++)
+  {
+    lc[i+1] = lc[i] + 1;
+    //cout << lc[i];
+    if (c == lc[i]) return true;
+  } //for
+  if ( c < '0' || c > '9')
+  {
+    result = false;
+  } //if
+  else
+  {
+    result= true;
+  }//else
+  if (c == 0x2b || c == 0x2d || c == 0x2e) result = true;
+  return result;
+} //isValidEmailChar
+
+int findAtSign(int counter, string line)
+{
+  int startLoc = 0;
+  for (int i = counter; i < line.length(); i++)              //search input file for line with @
+  {
+    if (line[i] == a)
+      {
+        startLoc = i;
+        break;
+      }//if
+  }//for
+  return startLoc;
+} //findAtSign
+
+int findEmailStart(int s, string line)                  //find email start
+{
+  s--;
+  while (s > 0 && isValidEmailChar(line[s])) s--;
+  if ( s > 0)
+  {
+    s++;         //increment s to the last valid character
+  }//if
+  return s;
+}//findEmailStart
+
+int findEmailEnd(int e, string line)                   //find email end
+{
+  e++;
+  while (e < line.length() && isValidEmailChar(line[e])) e++;
+  return e;
+} //findEmailEnd
+
+bool hasDot(int atSignLocation, int e, string line)
+{
+  bool valid = false;
+  for (int i= atSignLocation+1; i < e ; i++)              //search input file for line with @
+  {
+    if (line[i] == dot  && i >= atSignLocation+2)
+    {
+      valid = true;
+      break;
+    }//if
+  }//for
+  return valid;
+}//hasDot
+
+string changeCase(string email)
+{
+  string lcEmail = email;
+  transform(lcEmail.begin(), lcEmail.end(), lcEmail.begin(), toLower());
+  return lcEmail;
+}//changeCase
+
+bool checkDuplicate (deque<Address>& address, string email)
+{
+  bool duplicate = false;
+  if (address.size() > 0) 
+  {
+    for (int k = 0; k < address.size(); k++) 
+    {
+      if ((changeCase(email)) == (changeCase (address[k].email))) 
+      {
+      duplicate = true;
+      break;
+      }//if
+    }//for
+  }//if
+return duplicate;
+}//checkDuplicate
+
+
+
