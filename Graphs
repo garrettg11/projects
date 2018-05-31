@@ -1,0 +1,212 @@
+Test the program for the data set 1 listed. Enter this data into a file and input the data from the file.
+
+The data consists of two parts. In the first part, each line represents a vertex. It contain two values. The first value specifies the vertex number. The second value specifies the vertex name. The first part ends when a line contains -1 by itself. In the second part, each line represents an edge. It contains three values. The first two values specify two vertices connecting the edge. The third value specifies the weight of the edge. This part ends when a line contains -1 by itself.
+
+0 SF
+
+1 LA
+
+2 CHICAGO
+
+3 NY
+
+4 PARIS
+
+5 LONDON
+
+-1
+
+0 1 80
+
+0 2 200
+
+0 3 300
+
+1 2 230
+
+1 5 700
+
+2 3 180
+
+3 4 630
+
+3 5 500
+
+4 5 140
+
+-1
+
+****************************************************************************
+
+//Programmer: Garrett Garcia
+//Programmer's ID: 1113850
+
+#include <iostream>
+#include <string>
+
+using namespace std;
+
+
+class pque
+{
+public:
+	struct RecType
+	{
+		int priority;
+		string name;
+	};
+	RecType x[100];
+	int lastIndex;
+	RecType userInput;
+private:
+	void maxreheapifyUpward(RecType x[], int lastIndex)
+	{
+		int parentIndex;
+		int childIndex = lastIndex;
+		while (childIndex > 0)
+		{
+			parentIndex = childIndex / 2;
+			if (x[childIndex].priority <= x[parentIndex].priority)
+				break;
+			else
+			{
+				///swap values at child and at parent.
+				RecType tempIndex = x[childIndex];
+				x[childIndex] = x[parentIndex];
+				x[parentIndex] = tempIndex;
+				///Update child to parent
+				childIndex = parentIndex;
+			}
+		}
+	}
+
+
+	void maxreheapifyDownward(RecType x[], int lastIndex)
+	{
+		int parentIndex = 0;
+		int largeChildIndex;
+		///cout << "hi maxreheapifyDownward" << endl;
+
+		while (parentIndex < lastIndex)
+		{
+			///cout << "hi maxreheapifyDownward 2" << endl;
+
+			largeChildIndex = findLargeChildIndex(x, parentIndex, lastIndex);
+			if (largeChildIndex < 0 || x[largeChildIndex].priority <= x[parentIndex].priority)
+				break;
+			else
+			{
+				///swap value at parentIndex with value at largeChildIndex
+				RecType temp = x[parentIndex];
+				x[parentIndex] = x[largeChildIndex];
+				x[largeChildIndex] = temp;
+				///update parentIndex
+				parentIndex = largeChildIndex;
+
+			}
+
+		}
+
+	}
+
+
+	int findLargeChildIndex(RecType x[], int  parentIndex, int lastIndex)
+	{
+		int  lChildIndex = (2 * parentIndex) + 1;
+		int rChildIndex = (2 * parentIndex) + 2;
+
+		//case both children exist
+		if (rChildIndex <= lastIndex && lChildIndex <= lastIndex)
+		{
+			///compare value at rChildIndex and at lChildIndex
+			///return the index where the value is smaller
+
+			if (x[rChildIndex].priority > x[lChildIndex].priority)
+			{
+				return rChildIndex;
+			}
+			else
+			{
+				return lChildIndex;
+			}
+		}
+
+		///case only left child exist
+		else if (lChildIndex <= lastIndex)
+		{
+			return lChildIndex;
+		}
+		///case both children missing
+		else
+		{
+			return -1;
+		}
+
+	}
+
+public:
+	pque() { lastIndex = -1; }
+	void penque(int p, string n)
+	{
+		lastIndex++;
+		x[lastIndex].priority = p;
+		x[lastIndex].name = n;
+		maxreheapifyUpward(x, lastIndex);
+	}
+	RecType pdeque()
+	{
+		RecType returnValue = x[0];
+		x[0] = x[lastIndex];
+		lastIndex--;
+		maxreheapifyDownward(x, lastIndex);
+		return returnValue;
+	}
+	bool isEmpty()
+	{
+		if (lastIndex < 0) { return true; }
+		else { return false; }
+	}
+
+};
+
+int main()
+{
+
+	// programmer's identification
+	cout << "Programmer: Garrett Garcia\n";
+	cout << "Programmer's ID: 1113850\n";
+	cout << "File: " << __FILE__ << endl << endl;
+
+	pque recordList;
+
+	cout << "Input Number" << endl;
+	cin >> recordList.userInput.priority;
+	
+	//Do not accept any value less than 0
+
+	while (recordList.userInput.priority >= 0)
+	{
+		
+		cout << "input name" << endl;
+		cin >> recordList.userInput.name;
+		recordList.penque(recordList.userInput.priority, recordList.userInput.name);
+		cout << "input number" << endl;
+		cin >> recordList.userInput.priority;
+		if (recordList.userInput.priority == -1)
+		{
+			break;
+		}
+	}
+
+	while (!recordList.isEmpty())
+	{
+		recordList.userInput = recordList.pdeque();
+		cout << recordList.userInput.priority << " " << recordList.userInput.name << endl;
+
+	}
+
+	system("PAUSE");
+	return 0;
+}
+
+
