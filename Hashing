@@ -1,0 +1,226 @@
+
+#ifndef HASHYPROJECT_HASHTABLE_H
+#define HASHYPROJECT_HASHTABLE_H
+
+#include <iostream>
+#include <string>
+using namespace std;
+
+const int TABLE_SIZE = 200;
+
+
+///HashNode Class Declaration
+
+
+
+
+class StudentHT {
+private:
+
+	struct RecType {
+		int id;
+		string firstName;
+		string lastName;
+	};
+
+	struct NodeType {
+		RecType recType;
+		NodeType* next;
+	};
+
+	NodeType* HashTable[TABLE_SIZE];
+
+
+
+public:
+	StudentHT();
+	int hash(string key);
+	void insert(string key);
+	void PrintTable();
+	int NumberOfItemsInIndex(int index);
+	int  search(string key);
+
+
+
+
+};
+
+
+#endif //HASHYPROJECT_HASHTABLE_H
+********************************************************************
+
+#include "HashNode.h"
+#include <iostream>
+#include <string>
+using namespace std;
+
+StudentHT::StudentHT() {
+
+	for (int i = 0; i < TABLE_SIZE; i++) {
+		HashTable[i] = new NodeType;
+		HashTable[i]->recType.id = 0;
+		HashTable[i]->recType.firstName = "";
+		HashTable[i]->recType.lastName = "";
+		HashTable[i]->next = nullptr;
+
+	}
+
+}
+
+void StudentHT::insert(string key) {
+	int index = hash(key);
+
+
+
+
+	if (HashTable[index]->recType.firstName == "") {
+		HashTable[index]->recType.id = stoi(key);
+		HashTable[index]->recType.firstName = key;
+		HashTable[index]->recType.lastName = key;
+
+	}
+	else {
+		NodeType* Ptr = HashTable[index];
+		NodeType* n = new NodeType;
+		n->recType.id = stoi(key);
+		n->recType.firstName = key;
+		n->recType.lastName = key;
+		n->next = NULL;
+		while (Ptr->next != NULL) {
+			Ptr = Ptr->next;
+		}
+		Ptr->next = n;
+	}
+
+
+}
+
+int StudentHT::hash(string key) {
+	return  stoi(key) % TABLE_SIZE;
+
+}
+
+void StudentHT::PrintTable() {
+	int number;
+	for (int i = 0; i < TABLE_SIZE; i++) {
+		number = NumberOfItemsInIndex(i);
+		cout << "--------------------------------\n";
+		cout << "index = " << i << endl;
+		cout << HashTable[i]->recType.id << endl;
+		cout << HashTable[i]->recType.firstName << endl;
+		cout << HashTable[i]->recType.lastName << endl;
+		cout << "# of items =  " << number << endl;
+		cout << "--------------------------------\n";
+
+	}
+
+}
+
+int StudentHT::NumberOfItemsInIndex(int index) {
+
+	int count = 0;
+	if (HashTable[index]->recType.firstName == "") {
+		return  count;
+	}
+	else {
+		count++;
+		NodeType* Ptr = HashTable[index];
+		while (Ptr->next != nullptr) {
+
+
+			count++;
+			Ptr = Ptr->next;
+		}
+
+	}
+	return count;
+}
+int StudentHT::search(string key) {
+
+	// determine the bucket that the name should be stored in if it exists
+	int index = hash(key);
+	bool foundId = false;
+	//string drink;
+
+	NodeType* Ptr = HashTable[index];
+	while (Ptr != NULL) {
+
+		if (Ptr->recType.id == stoi(key)) {
+			foundId = true;
+			break;
+		}
+		Ptr = Ptr->next;
+	}
+	if (foundId) {
+		cout << "Found =  " << key << endl;
+		return stoi(key);
+
+	}
+	else {
+		cout << key << " not found in the hash table\n";
+		return -1;
+	}
+
+
+}
+
+
+
+
+********************************************************************
+//Programmer: Garrett Garcia
+
+#include <iostream>
+#include <string>
+#include <fstream>
+#include "HashNode.h"
+using namespace std;
+
+int main() {
+
+	// programmer's identification
+	cout << "Programmer: Garrett Garcia\n";
+	cout << "Programmer's ID: 1113850\n";
+	cout << "File: " << __FILE__ << endl << endl;
+
+	string line;
+	ifstream fin;
+
+	fin.open("Add.txt");
+	if (!fin.good()) throw "I/O error";
+
+	StudentHT studentHT;
+
+	while (fin.good()) // EOF loop
+	{
+
+		// read a line from the file and break it down into values
+		getline(fin, line);
+
+		studentHT.insert(line);
+	}
+	fin.close();
+	studentHT.PrintTable();
+	// Search for id's
+
+	fin.open("Search.txt");
+	if (!fin.good()) throw "I/O error";
+
+	studentHT.startStatistics();
+
+	while (fin.good()) // EOF loop
+	{
+
+		// read a line from the file and break it down into values
+		getline(fin, line);
+		studentHT.incIdsSearched();
+		int id = studentHT.search(line);
+
+	}
+	fin.close();
+	studentHT.displayStatistics();
+
+
+	system("PAUSE");
+	return 0;
+}
