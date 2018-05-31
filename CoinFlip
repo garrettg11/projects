@@ -1,0 +1,96 @@
+//Application Program
+
+#include<iostream>
+#include<iomanip>
+#include"Coin.h"
+using namespace std;
+
+
+
+int main() {
+
+
+	//initialize random number generator
+	srand(time(0));
+
+	//data
+	double playerBalance = 0;
+	double cpuBalance = 0;
+	int round = 0;
+	Coin quarter;
+	Coin dime;
+	Coin nickel;
+
+	//output game instructions to console
+	cout << "How to play: a quarter, nickel and dime will be flipped at the beginning of a player's turn\n";
+	cout << "if the coin lands on Heads, then the value of the coin will be added to the player's balance\n";
+	cout << "player closest to $1.00 wins\n\n";
+
+
+	//declare starting amounts
+	cout << fixed << setprecision(2);
+	cout << "Your starting balace: $" << playerBalance << endl;
+	cout << "CPU's starting balance: $" << cpuBalance << endl << endl;
+
+
+	do {
+
+		round++;
+
+		//toss coins for player
+		quarter.toss();
+		dime.toss();
+		nickel.toss();
+
+		//add to total
+		if (quarter.getSideUp() == "Heads")
+			playerBalance += .25;
+		if (dime.getSideUp() == "Heads")
+			playerBalance += .1;
+		if (nickel.getSideUp() == "Heads")
+			playerBalance += .05;
+		
+		cout << "Your current balance for round " << round << ": $" << playerBalance << endl;
+
+		//toss coins for cpu
+		quarter.toss();
+		dime.toss();
+		nickel.toss();
+
+		//add to total
+		if (quarter.getSideUp() == "Heads")
+			cpuBalance += .25;
+		if (dime.getSideUp() == "Heads")
+			cpuBalance += .1;
+		if (nickel.getSideUp() == "Heads")
+			cpuBalance += .05;
+
+		cout << "CPU's balance for round " << round << ": $" << cpuBalance << endl << endl;		
+
+	} while ((playerBalance < 1) && (cpuBalance < 1));
+
+
+	//determine winner
+	if (playerBalance == cpuBalance)
+		cout << "\n...Tie Game...\n\n";
+	else if (playerBalance >= 1 && cpuBalance < 1)	
+		cout << "\n[You win]\n\n";
+	else if (playerBalance < 1 && cpuBalance >= 1)
+		cout << "\n[Computer Wins]\n\n";
+	else //both greater than 1.00
+		if (playerBalance < cpuBalance)
+			cout << "\n[You win]\n\n";
+		else 
+			cout << "\n[Computer Wins]\n\n";
+
+	
+
+	system("PAUSE");
+	return 0;
+
+
+
+
+}
+
+
