@@ -1,0 +1,35 @@
+body{
+	border: 20px solid #BDC3C7;
+	max-width: 700px;
+	width: 80%;          /*when width is less than 700px, will adjust to 80%*/
+	margin: 20px auto;
+	padding: 20px;
+	font-family: 'Source Sans Pro', sans-serif; /*applied to body, inherited in rest of page*/
+
+}
+
+h2{
+	
+	text-transform: uppercase;
+	letter-spacing: 3px;       /*or .2rem*/
+	font-weight: 200;
+	color: #3498DB;
+}
+
+h1{
+	color: #2C3E50;
+	font-weight: 900;
+}
+
+p{
+	font-weight: 500;
+}
+
+.first{
+	border-left: 7px solid #BDC3C7;
+	padding-left: 10px;
+}
+
+hr{
+	opacity: .5;
+}
